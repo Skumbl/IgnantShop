@@ -1,4 +1,3 @@
-import { Events, MessageFlags, Collection } from 'discord.js';
 import { ExtendedClient } from './client.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -7,41 +6,10 @@ const { token } = process.env;
 const client: ExtendedClient = new ExtendedClient();
 
 await loadCommands();
+await loadEvents();
+client.login(token);
 
-client.once(Events.ClientReady, (readyClient) => {
-    console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-});
-
-client.on(Events.InteractionCreate, async (interaction) => {
-    if (!interaction.isChatInputCommand()) return;
-
-    const command = (interaction.client as ExtendedClient).commands.get(interaction.commandName);
-
-    if (!command) {
-        console.error(`no command matching ${interaction.commandName}`);
-        return;
-    }
-
-    try {
-        await command.execute(interaction);
-    }
-    catch (error) {
-        console.error(error);
-        if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({
-                content: 'There was an error while executing this command!',
-                flags: MessageFlags.Ephemeral,
-            });
-        } else {
-            await interaction.reply({
-                content: 'There was an error while executing this command!',
-                flags: MessageFlags.Ephemeral,
-            });
-        }
-    }
-});
-
-// function for looping through the commands dir and loading in all slash functions
+// function to load all slash functions and set command in client
 async function loadCommands() {
     const folderPath = path.join(import.meta.dirname, 'commands');
     const commandFolders = fs.readdirSync(folderPath);
@@ -61,10 +29,27 @@ async function loadCommands() {
                 client.commands.set(command.data.name, command);
             }
             else {
-                console.log(`Oh fuck, the command at ${filePath} is missing a required "data" or "execute" prop`);
+                console.log(`[WARNING] the command at ${filePath} is missing a required "data" or "execute" prop`);
             }
         }
     }
 }
 
-client.login(token);
+// functon to load all eventss
+async function loadEvents() {
+    const eventsPath = path.join(import.meta.dirname, 'events');
+    const eventsFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
+
+    for (const file of eventsFiles) {
+        const filePath = path.join(eventsPath, file);
+        const eventModule = await import(`file://${filePath}`);
+        const event = eventModule.default;
+
+        if (event.once) {
+            client.once(event.name, (...args) => event.execute(...args));
+        }
+        else {
+            client.on(event.name, (...args) => event.execute(...args));
+        }
+    }
+}
