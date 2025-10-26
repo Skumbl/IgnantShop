@@ -22,7 +22,7 @@ const commandFolders = fs.readdirSync(folderPath);
 for (const folder of commandFolders) {
     const commandsPath = path.join(folderPath, folder);
     const commandFiles = fs.readdirSync(commandsPath).filter(file =>
-        file.endsWith('ts') || file.endsWith('js')
+        file.endsWith('ts') || file.endsWith('js'),
     );
 
     // loop through each files
@@ -49,7 +49,7 @@ const rest = new REST().setToken(token);
 
         const data: any = await rest.put(
             Routes.applicationGuildCommands(clientId, guildId),
-            { body: commands }
+            { body: commands },
         ) as any;
 
         console.log(`Successfully reloaded ${data.length} application commands.`);

@@ -1,13 +1,14 @@
 import { Events, MessageFlags } from 'discord.js';
 import type { Interaction } from 'discord.js';
-import type { ExtendedClient } from '../client.js';
+import type { Command, ExtendedClient } from '../client.js';
 
-module.exports = {
+export default {
     name: Events.InteractionCreate,
-    async execute(interaction: Interaction) {
+    async execute(interaction: Interaction): Promise<void> {
         if (!interaction.isChatInputCommand()) return;
 
-        const command = (interaction.client as ExtendedClient).commands.get(interaction.commandName);
+        const command: Command | undefined =
+            (interaction.client as ExtendedClient).commands.get(interaction.commandName);
 
         if (!command) {
             console.error(`no command matching ${interaction.commandName}`);
@@ -24,12 +25,13 @@ module.exports = {
                     content: 'There was an error while executing this command!',
                     flags: MessageFlags.Ephemeral,
                 });
-            } else {
+            }
+            else {
                 await interaction.reply({
                     content: 'There was an error while executing this command!',
                     flags: MessageFlags.Ephemeral,
                 });
             }
         }
-    }
+    },
 };

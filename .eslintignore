@@ -1,0 +1,16 @@
+# Build output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Database
+data/
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log

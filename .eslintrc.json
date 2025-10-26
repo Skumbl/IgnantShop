@@ -1,6 +1,11 @@
 {
     "root": true,
     "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "project": "./tsconfig.json"
+    },
     "plugins": [
         "@typescript-eslint"
     ],
@@ -111,6 +116,28 @@
         "space-infix-ops": "error",
         "space-unary-ops": "error",
         "spaced-comment": "error",
-        "yoda": "error"
+        "yoda": "error",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/typedef": [
+            "error",
+            {
+                "arrayDestructuring": true,
+                "arrowParameter": true,
+                "memberVariableDeclaration": true,
+                "objectDestructuring": true,
+                "parameter": true,
+                "propertyDeclaration": true,
+                "variableDeclaration": true,
+                "variableDeclarationIgnoreFunction": false
+            }
+        ],
+        "@typescript-eslint/explicit-function-return-type": [
+            "error",
+            {
+                "allowExpressions": false,
+                "allowTypedFunctionExpressions": true,
+                "allowHigherOrderFunctions": true
+            }
+        ]
     }
 }
