@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import type { CommandInteraction } from 'discord.js';
+import type { Command } from '../../types/index.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -8,4 +9,4 @@ export default {
     async execute(interaction: CommandInteraction): Promise<void> {
         await interaction.reply('Pong!');
     },
-};
+} satisfies Command;

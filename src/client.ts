@@ -1,9 +1,6 @@
-import { Client, Collection, GatewayIntentBits, SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
+import type { Command } from './types/index.js';
 
-export interface Command {
-    data: SlashCommandBuilder;
-    execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
-}
 export class ExtendedClient extends Client {
     commands: Collection<string, Command>;
 

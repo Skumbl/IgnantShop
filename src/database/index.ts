@@ -45,5 +45,5 @@ export function initDB(): void {
         )
     `);
 
-    console.log('Database initialized');
+    console.log('[Database] Database initialized');
 }

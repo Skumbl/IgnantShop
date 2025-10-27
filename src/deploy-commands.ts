@@ -1,6 +1,8 @@
 import { REST, Routes } from 'discord.js';
+import type { RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord.js';
 import fs from 'node:fs';
 import path from 'node:path';
+import type { Command } from './types/index.js';
 
 const token: string | undefined = process.env.DISCORD_TOKEN;
 const clientId: string | undefined = process.env.CLIENT_ID;
@@ -11,25 +13,26 @@ if (!token || !clientId || !guildId) {
     process.exit(1);
 }
 
-// fuck type saftey, I'm not going back to write a new type
-const commands: any[] = [];
-
-const folderPath = path.join(import.meta.dirname, 'commands');
-
-const commandFolders = fs.readdirSync(folderPath);
+const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
+const folderPath: string = path.join(import.meta.dirname, 'commands');
+const commandFolders: string[] = fs.readdirSync(folderPath);
 
 // loop thought all folders for slash commands
 for (const folder of commandFolders) {
-    const commandsPath = path.join(folderPath, folder);
-    const commandFiles = fs.readdirSync(commandsPath).filter(file =>
+    const commandsPath: string = path.join(folderPath, folder);
+    const commandFiles: string[] = fs.readdirSync(commandsPath).filter((file: string) =>
         file.endsWith('ts') || file.endsWith('js'),
     );
 
     // loop through each files
     for (const file of commandFiles) {
-        const filePath = path.join(commandsPath, file);
-        const commandModule = await import(filePath);
-        const command = commandModule.default;
+        const filePath: string = path.join(commandsPath, file);
+        const command: Command | undefined = (await import(filePath)).default;
+
+        if (!command) {
+            console.error(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+            continue;
+        }
 
         if ('data' in command && 'execute' in command) {
             commands.push(command.data.toJSON());
@@ -40,21 +43,24 @@ for (const folder of commandFolders) {
     }
 }
 
-const rest = new REST().setToken(token);
+const rest: REST = new REST().setToken(token);
 
 // deploy this shit
-(async () => {
+(async (): Promise<void> => {
     try {
         console.log(`Started refreshing ${commands.length} slash commands.`);
 
-        const data: any = await rest.put(
+        const data: unknown = await rest.put(
             Routes.applicationGuildCommands(clientId, guildId),
             { body: commands },
-        ) as any;
+        );
 
-        console.log(`Successfully reloaded ${data.length} application commands.`);
+        const commandData: RESTPostAPIChatInputApplicationCommandsJSONBody[] =
+            data as RESTPostAPIChatInputApplicationCommandsJSONBody[];
+
+        console.log(`Successfully reloaded ${commandData.length} application commands.`);
     }
-    catch (error) {
-        console.error('error deploying commands', error);
+    catch (error: unknown) {
+        console.error('Error deploying commands:', error);
     }
 })();

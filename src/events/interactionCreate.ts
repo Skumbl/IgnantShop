@@ -1,6 +1,7 @@
 import { Events, MessageFlags } from 'discord.js';
 import type { Interaction } from 'discord.js';
-import type { Command, ExtendedClient } from '../client.js';
+import type { ExtendedClient } from '../client.js';
+import type { Event, Command } from '../types/index.js';
 
 export default {
     name: Events.InteractionCreate,
@@ -9,7 +10,6 @@ export default {
 
         const command: Command | undefined =
             (interaction.client as ExtendedClient).commands.get(interaction.commandName);
-
         if (!command) {
             console.error(`no command matching ${interaction.commandName}`);
             return;
@@ -34,4 +34,4 @@ export default {
             }
         }
     },
-};
+} satisfies Event<Events.InteractionCreate>;

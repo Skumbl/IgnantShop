@@ -2,13 +2,15 @@ import { ExtendedClient } from './client.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { initDB } from './database/index.js';
+import type { Command, Event } from './types/index.js';
 
 const token: string | undefined = process.env.DISCORD_TOKEN;
 const client: ExtendedClient = new ExtendedClient();
 
+initDB();
 await loadCommands();
 await loadEvents();
-initDB();
+
 client.login(token);
 
 // function to load all slash functions and set command in client
@@ -18,14 +20,13 @@ async function loadCommands(): Promise<void> {
 
     for (const folder of commandFolders) {
         const commandsPath: string = path.join(folderPath, folder);
-        const commandsFiles: string[] = fs.readdirSync(commandsPath).filter(file =>
+        const commandsFiles: string[] = fs.readdirSync(commandsPath).filter((file: string) =>
             file.endsWith('.ts') || file.endsWith('.js'),
         );
 
         for (const file of commandsFiles) {
             const filePath: string = path.join(commandsPath, file);
-            const commandModule = await import(`file://${filePath}`);
-            const command = commandModule.default;
+            const command: Command | undefined = (await import(`file://${filePath}`)).default;
 
             if (!command) {
                 console.log(`[WARNING] ${filePath} has no default export`);
@@ -34,9 +35,10 @@ async function loadCommands(): Promise<void> {
 
             if ('data' in command && 'execute' in command) {
                 client.commands.set(command.data.name, command);
+                console.log(`[Success] Loaded command: ${command.data.name}`);
             }
             else {
-                console.log(`[WARNING] the command at ${filePath} is missing a required "data" or "execute" prop`);
+                console.log(`[WARNING] ${filePath} is missing "data" or "execute" property`);
             }
         }
     }
@@ -44,19 +46,20 @@ async function loadCommands(): Promise<void> {
 
 // function to load all events
 async function loadEvents(): Promise<void> {
-    const eventsPath = path.join(import.meta.dirname, 'events');
-    const eventsFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
-
+    const eventsPath: string = path.join(import.meta.dirname, 'events');
+    const eventsFiles: string[] = fs.readdirSync(eventsPath).filter((file: string) => file.endsWith('.ts') || file.endsWith('.js'));
     for (const file of eventsFiles) {
-        const filePath = path.join(eventsPath, file);
-        const eventModule = await import(`file://${filePath}`);
-        const event = eventModule.default;
-
+        const filePath: string = path.join(eventsPath, file);
+        const event: Event | undefined = (await import(`file://${filePath}`)).default;
+        if (!event) {
+            console.log(`[WARNING] ${filePath} has no default export`);
+            continue;
+        }
         if (event.once) {
-            client.once(event.name, (...args) => event.execute(...args));
+            client.once((event.name as string), (...args: unknown[]) => event.execute(...args));
         }
         else {
-            client.on(event.name, (...args) => event.execute(...args));
+            client.on((event.name as string), (...args: unknown[]) => event.execute(...args));
         }
     }
 }
