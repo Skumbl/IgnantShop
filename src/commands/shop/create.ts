@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import type { CommandInteraction } from 'discord.js';
 import type { User } from 'discord.js';
 import type { Command } from '../../types/index.js';
-import * as wallet from '../../database/wallet.js';
+import { createNewAccount } from '../../database/wallet.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -28,7 +28,7 @@ export default {
             return;
         }
 
-        const accountCreated: boolean = wallet.createNewAccount(accountHolder.id, accountBalance);
+        const accountCreated: boolean = createNewAccount(accountHolder.id, accountBalance);
 
         if (accountCreated) {
             await interaction.reply(`Account created for ${accountHolder.username}`);
