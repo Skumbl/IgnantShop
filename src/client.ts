@@ -9,7 +9,7 @@ export class ExtendedClient extends Client {
             intents: [
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildMembers,
-            ]
+            ],
         });
         this.commands = new Collection();
     }

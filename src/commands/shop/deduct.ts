@@ -1,22 +1,23 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
-import { award } from '../../database/wallet.js';
 import type { Command } from '../../types/index.js';
+import { deduct } from '../../database/wallet.js';
 
 export default {
     data: new SlashCommandBuilder()
-        .setName('award')
-        .setDescription('Award a user with coins')
+        .setName('deduct')
+        .setDescription('deducts a certain amount from the user')
+
         .addUserOption((option: any) =>
             option
                 .setName('user')
-                .setDescription('User to award coins to')
+                .setDescription('The user to deduct the amount from')
                 .setRequired(true),
         )
+
         .addNumberOption((option: any) =>
-            option
-                .setName('amount')
-                .setDescription('The amount of coins to award')
+            option.setName('amount')
+                .setDescription('The amount to calculate the tax for')
                 .setRequired(true),
         ),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -28,13 +29,13 @@ export default {
             return;
         }
 
-        const result: boolean = award(user.id, amount);
+        const result: boolean = deduct(user.id, amount);
 
         if (result) {
-            await interaction.reply(`Awarded ${amount} coins to ${user.displayName}`);
+            await interaction.reply(`Deducted ${amount} from ${user.username}'s wallet`);
         }
         else {
-            await interaction.reply('Failed to award coins');
+            await interaction.reply(`Failed to deduct ${amount} from ${user.username}'s wallet`);
         }
     },
 } satisfies Command;

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import type { CommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import type { User } from 'discord.js';
 import type { Command } from '../../types/index.js';
 import { createNewAccount } from '../../database/wallet.js';
@@ -19,9 +19,9 @@ export default {
             .setName('balance')
             .setDescription('starting account balance')
             .setRequired(true)),
-    async execute(interaction: CommandInteraction): Promise<void> {
-        const accountHolder: User = interaction.options.getUser('user');
-        const accountBalance: number = interaction.options.getNumber('balance');
+    async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+        const accountHolder: User | null = interaction.options.getUser('user');
+        const accountBalance: number | null = interaction.options.getNumber('balance');
 
         if (!accountHolder || !accountBalance) {
             await interaction.reply('Invalid user or balance');
@@ -34,7 +34,7 @@ export default {
             await interaction.reply(`Account created for ${accountHolder.username}`);
         }
         else {
-            await interaction.reply(`Failed to create account for ${accountHolder.username}`);
+            await interaction.reply('Cannot create account or Account Already Exists');
         }
     },
 } satisfies Command;

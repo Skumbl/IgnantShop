@@ -26,7 +26,7 @@ export function initDB(): void {
     // user inventory table
     db.exec(`
         CREATE TABLE IF NOT EXISTS inventory (
-            user_id TEXT PRIMARY KEY,
+            user_id TEXT PRIMARY KEY AUTOINCREMENT,
             item_id TEXT NOT NULL,
             item_name TEXT NOT NULL,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
