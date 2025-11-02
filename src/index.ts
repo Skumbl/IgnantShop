@@ -45,21 +45,25 @@ async function loadCommands(): Promise<void> {
 }
 
 // function to load all events
+// function to load all events
 async function loadEvents(): Promise<void> {
     const eventsPath: string = path.join(import.meta.dirname, 'events');
     const eventsFiles: string[] = fs.readdirSync(eventsPath).filter((file: string) => file.endsWith('.ts') || file.endsWith('.js'));
+
     for (const file of eventsFiles) {
         const filePath: string = path.join(eventsPath, file);
         const event: Event | undefined = (await import(`file://${filePath}`)).default;
+
         if (!event) {
             console.log(`[WARNING] ${filePath} has no default export`);
             continue;
         }
+
         if (event.once) {
-            client.once((event.name as string), (...args: unknown[]) => event.execute(...args));
+            client.once(event.name, (...args: unknown[]) => event.execute(...args));
         }
         else {
-            client.on((event.name as string), (...args: unknown[]) => event.execute(...args));
+            client.on(event.name, (...args: unknown[]) => event.execute(...args));
         }
     }
 }

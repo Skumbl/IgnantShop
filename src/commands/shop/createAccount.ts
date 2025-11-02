@@ -6,7 +6,7 @@ import { createNewAccount } from '../../database/wallet.js';
 
 export default {
     data: new SlashCommandBuilder()
-        .setName('create')
+        .setName('create-account')
         .setDescription('opens a new ignant account for user')
 
         .addUserOption((option: any) =>

@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
+import { isIgnant } from '../../utils/auth.js';
 import type { Command } from '../../types/index.js';
 import { deduct } from '../../database/wallet.js';
 
@@ -24,7 +25,7 @@ export default {
         const user: User | null = interaction.options.getUser('user', true);
         const amount: number = interaction.options.getNumber('amount', true);
 
-        if (!user) {
+        if (!isIgnant(user.id)) {
             await interaction.reply('Invalid User');
             return;
         }

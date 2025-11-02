@@ -23,25 +23,27 @@ export function initDB(): void {
             updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
     `);
-    // user inventory table
-    db.exec(`
-        CREATE TABLE IF NOT EXISTS inventory (
-            user_id TEXT PRIMARY KEY AUTOINCREMENT,
-            item_id TEXT NOT NULL,
-            item_name TEXT NOT NULL,
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES wallet(user_id)
-        )
-    `);
     // shop table (what's available  to buy)
     db.exec(`
         CREATE TABLE IF NOT EXISTS shop (
-            item_id TEXT PRIMARY KEY,
+            item_id INTEGER PRIMARY KEY AUTOINCREMENT,
             item_name TEXT NOT NULL,
             price INTEGER NOT NULL,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+    // user inventory table
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS inventory (
+            inventory_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT NOT NULL,  -- Changed from PRIMARY KEY
+            item_id INTEGER NOT NULL,  -- Changed to INTEGER to match shop.item_id
+            item_name TEXT NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES wallet(user_id),
+            FOREIGN KEY (item_id) REFERENCES shop(item_id)
         )
     `);
 
