@@ -2,6 +2,7 @@ import { ExtendedClient } from './client.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { initDB } from './database/index.js';
+import type { ClientEvents } from 'discord.js';
 import type { Command, Event } from './types/index.js';
 
 const token: string | undefined = process.env.DISCORD_TOKEN;
@@ -45,7 +46,6 @@ async function loadCommands(): Promise<void> {
 }
 
 // function to load all events
-// function to load all events
 async function loadEvents(): Promise<void> {
     const eventsPath: string = path.join(import.meta.dirname, 'events');
     const eventsFiles: string[] = fs.readdirSync(eventsPath).filter((file: string) => file.endsWith('.ts') || file.endsWith('.js'));
@@ -60,10 +60,11 @@ async function loadEvents(): Promise<void> {
         }
 
         if (event.once) {
-            client.once(event.name, (...args: unknown[]) => event.execute(...args));
+            client.once(event.name, (...args: any[]) => event.execute(...args as ClientEvents[typeof event.name]));
+        } else {
+            client.on(event.name, (...args: any[]) => event.execute(...args as ClientEvents[typeof event.name]));
         }
-        else {
-            client.on(event.name, (...args: unknown[]) => event.execute(...args));
-        }
+
+        console.log(`[SUCCESS] Loaded event: ${event.name}`);
     }
 }
