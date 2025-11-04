@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import type { ChatInputCommandInteraction, User } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { isIgnant } from '../../utils/auth.js';
 import { createItem } from '../../database/shop.js';
 import type { Command } from '../../types/index.js';
@@ -7,7 +7,7 @@ import type { Command } from '../../types/index.js';
 export default {
     data: new SlashCommandBuilder()
         .setName('create-listing')
-        .setDescription('create ignant store list')
+        .setDescription('Create ignant store list')
 
         .addStringOption((option: any) => option
             .setName('name')
@@ -21,14 +21,14 @@ export default {
             .setRequired(true),
         ),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-        const name: string = interaction.options.getString('name', true);
-        const price: number = interaction.options.getNumber('price', true);
-        const result: boolean = createItem(name, price);
-
         if (!isIgnant(interaction.user.id)) {
             await interaction.reply('You\'re not Ignant, I don\'t have to listen to you');
             return;
         }
+
+        const name: string = interaction.options.getString('name', true);
+        const price: number = interaction.options.getNumber('price', true);
+        const result: boolean = createItem(name, price);
 
         if (!result) {
             await interaction.reply('Failed to create listing!');
