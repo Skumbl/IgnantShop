@@ -11,7 +11,7 @@ export default {
         .addNumberOption((option: any) =>
             option.setName('bet')
                 .setDescription('The amount of coins to bet')
-                .setRequired(true)
+                .setRequired(true),
         ),
     execute: async (interaction: ChatInputCommandInteraction): Promise<void> => {
         if (!isIgnant(interaction.user.id)) {
@@ -55,7 +55,8 @@ export default {
             if (slot1 === 7) {
                 winnings = bet * 10;
                 resultText = 'TRIPLE SEVENS JACKPOT!';
-            } else {
+            }
+            else {
                 winnings = bet * 5;
                 resultText = 'TRIPLE MATCH!';
             }
@@ -86,7 +87,7 @@ export default {
                 { name: 'Bet', value: `${bet} coins`, inline: true },
                 { name: 'Won', value: `${winnings} coins`, inline: true },
                 { name: 'Profit', value: `${profit >= 0 ? '+' : ''}${profit} coins`, inline: true },
-                { name: 'New Balance', value: `${newBalance} coins`, inline: false }
+                { name: 'New Balance', value: `${newBalance} coins`, inline: false },
             )
             .setFooter({ text: `${interaction.user.username}` })
             .setTimestamp();
