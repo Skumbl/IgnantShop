@@ -1,6 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
-import { isIgnant } from '../../utils/auth.js';
 import type { Command } from '../../types/index.js';
 import { deduct, getBalance } from '../../database/wallet.js';
 

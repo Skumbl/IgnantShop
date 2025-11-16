@@ -1,6 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { isIgnant } from '../../utils/auth.js';
 import { getBalance, deduct } from '../../database/wallet.js';
 import { addItemToInventory, getItemCount } from '../../database/inventory.js';
 import { getShopItem } from '../../database/shop.js';
