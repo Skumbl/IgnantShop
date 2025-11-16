@@ -17,14 +17,6 @@ export default {
                 .setRequired(true),
         ),
     execute: async (interaction: ChatInputCommandInteraction): Promise<void> => {
-        if (!isIgnant(interaction.user.id)) {
-            const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
-                .setDescription('You are not Ignant, I don\'t need to listen to you');
-            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
-            return;
-        }
-
         const itemID: number = interaction.options.getNumber('item_id', true);
         const user: string = interaction.user.id;
         const balance: number | null = getBalance(user);
