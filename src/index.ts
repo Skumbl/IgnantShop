@@ -61,7 +61,8 @@ async function loadEvents(): Promise<void> {
 
         if (event.once) {
             client.once(event.name, (...args: any[]) => event.execute(...args as ClientEvents[typeof event.name]));
-        } else {
+        }
+        else {
             client.on(event.name, (...args: any[]) => event.execute(...args as ClientEvents[typeof event.name]));
         }
 

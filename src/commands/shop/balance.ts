@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import type { Command } from '../../types/index.js';
 import { getBalance } from '../../database/wallet.js';
@@ -11,11 +11,28 @@ export default {
         const balance_amount: number | null = getBalance(interaction.user.id);
 
         if (balance_amount === null) {
-            await interaction.reply('make an account shidass');
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('You don\'t have an account yet, shidass');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            return;
         }
-        else if (balance_amount === 0) {
-            await interaction.reply(':rotating_light: **BROKE** :rotating_light: ');
+
+        if (balance_amount === 0) {
+            const brokeEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setTitle('BROKE')
+                .setDescription(`${interaction.user.username} has **0** Ignant Points`)
+                .setTimestamp();
+            await interaction.reply({ embeds: [brokeEmbed] });
+            return;
         }
-        await interaction.reply(`${interaction.user.username} has ${balance_amount} Ignant Points`);
+
+        const balanceEmbed: EmbedBuilder = new EmbedBuilder()
+            .setColor(0x0066FF)
+            .setTitle('Balance')
+            .setDescription(`${interaction.user.username} has **${balance_amount}** Ignant Points`)
+            .setTimestamp();
+        await interaction.reply({ embeds: [balanceEmbed] });
     },
-} as Command;
+} satisfies Command;

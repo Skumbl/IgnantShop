@@ -1,42 +1,61 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { isIgnant } from '../../utils/auth.js';
 import type { Command } from '../../types/index.js';
-import { deduct } from '../../database/wallet.js';
+import { deduct, getBalance } from '../../database/wallet.js';
 
 export default {
     data: new SlashCommandBuilder()
         .setName('deduct')
         .setDescription('deducts a certain amount from the user')
-
         .addUserOption((option: any) =>
             option
                 .setName('user')
                 .setDescription('The user to deduct the amount from')
                 .setRequired(true),
         )
-
         .addNumberOption((option: any) =>
             option.setName('amount')
-                .setDescription('The amount to calculate the tax for')
+                .setDescription('The amount to deduct')
                 .setRequired(true),
         ),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+        if (!isIgnant(interaction.user.id)) {
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('You are not Ignant, I don\'t need to listen to you');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            return;
+        }
+
         const user: User | null = interaction.options.getUser('user', true);
         const amount: number = interaction.options.getNumber('amount', true);
 
-        if (!isIgnant(user.id)) {
-            await interaction.reply('Invalid User');
+        if (!user) {
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('Invalid User');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
         }
 
         const result: boolean = deduct(user.id, amount);
 
         if (result) {
-            await interaction.reply(`Deducted ${amount} from ${user.username}'s wallet`);
+            const successEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0x66B266)
+                .setTitle('Coins Deducted')
+                .setDescription(
+                    `Deducted **${amount}** coin(s) from ${user}\n
+                    Current Balance: ${getBalance(user.id)} coin(s)`)
+                .setTimestamp();
+            await interaction.reply({ embeds: [successEmbed] });
         }
         else {
-            await interaction.reply(`Failed to deduct ${amount} from ${user.username}'s wallet`);
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription(`Failed to deduct ${amount} coins from ${user}. Insufficient balance or account doesn't exist.`);
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         }
     },
 } satisfies Command;

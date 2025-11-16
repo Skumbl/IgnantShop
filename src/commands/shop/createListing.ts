@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { isIgnant } from '../../utils/auth.js';
 import { createItem } from '../../database/shop.js';
@@ -8,21 +8,22 @@ export default {
     data: new SlashCommandBuilder()
         .setName('create-listing')
         .setDescription('Create ignant store list')
-
         .addStringOption((option: any) => option
             .setName('name')
             .setDescription('The name of the item')
             .setRequired(true),
         )
-
         .addNumberOption((option: any) => option
             .setName('price')
-            .setDescription('The description of the item')
+            .setDescription('The price of the item')
             .setRequired(true),
         ),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         if (!isIgnant(interaction.user.id)) {
-            await interaction.reply('You\'re not Ignant, I don\'t have to listen to you');
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('You\'re not Ignant, I don\'t have to listen to you');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
         }
 
@@ -31,13 +32,21 @@ export default {
         const result: boolean = createItem(name, price);
 
         if (!result) {
-            await interaction.reply('Failed to create listing!');
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('Failed to create listing!');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
         }
 
-        await interaction.reply(
-            `Created New Item Listing: \n
-            ${name}: $${price}`);
+        const successEmbed: EmbedBuilder = new EmbedBuilder()
+            .setColor(0x66B2FF)
+            .setTitle('Listing Created')
+            .setDescription(`**${name}** has been added to the shop`)
+            .addFields(
+                { name: 'Price', value: `${price} coins`, inline: true },
+            )
+            .setTimestamp();
+        await interaction.reply({ embeds: [successEmbed] });
     },
-
 } satisfies Command;

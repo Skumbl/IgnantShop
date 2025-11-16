@@ -37,9 +37,8 @@ export function initDB(): void {
     db.exec(`
         CREATE TABLE IF NOT EXISTS inventory (
             inventory_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id TEXT NOT NULL,  -- Changed from PRIMARY KEY
-            item_id INTEGER NOT NULL,  -- Changed to INTEGER to match shop.item_id
-            item_name TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            item_id INTEGER NOT NULL,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES wallet(user_id),

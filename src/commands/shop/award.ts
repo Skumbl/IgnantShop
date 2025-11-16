@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { isIgnant } from '../../utils/auth.js';
 import { award } from '../../database/wallet.js';
@@ -25,22 +25,37 @@ export default {
         const amount: number = interaction.options.getNumber('amount', true);
 
         if (!isIgnant(interaction.user.id)) {
-            await interaction.reply('You are not Ignant, I don\'t need to listen to you');
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('You are not Ignant, I don\'t need to listen to you');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
         }
 
         if (!user) {
-            await interaction.reply('Invalid Target User');
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('Invalid Target User');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
         }
 
         const result: boolean = award(user.id, amount);
 
         if (result) {
-            await interaction.reply(`Awarded ${amount} Ignant Coins to ${user.displayName}`);
+            const successEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF9900)
+                .setTitle('Coins Awarded')
+                .setDescription(`Awarded **${amount}** Ignant Coin(s) to ${user}`)
+                .setTimestamp();
+            await interaction.reply({ embeds: [successEmbed] });
         }
         else {
-            await interaction.reply('Failed to award ignant coins');
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('Failed to award ignant coin(s)');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            return;
         }
     },
 } satisfies Command;

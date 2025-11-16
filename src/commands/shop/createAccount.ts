@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import type { User } from 'discord.js';
 import type { Command } from '../../types/index.js';
@@ -8,13 +8,11 @@ export default {
     data: new SlashCommandBuilder()
         .setName('create-account')
         .setDescription('opens a new ignant account for user')
-
         .addUserOption((option: any) =>
             option
                 .setName('user')
                 .setDescription('new account hodler')
                 .setRequired(true))
-
         .addNumberOption((option: any) => option
             .setName('balance')
             .setDescription('starting account balance')
@@ -24,17 +22,31 @@ export default {
         const accountBalance: number | null = interaction.options.getNumber('balance');
 
         if (!accountHolder || !accountBalance) {
-            await interaction.reply('Invalid user or balance');
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('Invalid user or balance');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
         }
 
         const accountCreated: boolean = createNewAccount(accountHolder.id, accountBalance);
 
         if (accountCreated) {
-            await interaction.reply(`Account created for ${accountHolder.username}`);
+            const successEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0x66FFB2)
+                .setTitle('Account Created')
+                .setDescription(`Account created for ${accountHolder}`)
+                .addFields(
+                    { name: 'Starting Balance', value: `${accountBalance} coins`, inline: true },
+                )
+                .setTimestamp();
+            await interaction.reply({ embeds: [successEmbed] });
         }
         else {
-            await interaction.reply('Cannot create account or Account Already Exists');
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('Cannot create account. Account may already exist.');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         }
     },
 } satisfies Command;

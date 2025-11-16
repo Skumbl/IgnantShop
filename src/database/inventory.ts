@@ -10,14 +10,14 @@ export interface InventoryItem {
     updated_at: string;
 }
 
-export function addItemToInventory(userId: string, itemId: number, itemName: string): boolean {
-    if (!userId || !itemId || !itemName) return false;
+export function addItemToInventory(userId: string, itemId: number): boolean {
+    if (!userId || !itemId) return false;
 
     const stmt: Database.Statement = db.prepare(`
-        INSERT INTO inventory (user_id, item_id, item_name, created_at, updated_at)
-        VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO inventory (user_id, item_id, created_at, updated_at)
+        VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `);
-    const result: Database.RunResult = stmt.run(userId, itemId, itemName);
+    const result: Database.RunResult = stmt.run(userId, itemId);
     return result.changes > 0;
 }
 
@@ -35,12 +35,22 @@ export function getUserInventory(userId: string): InventoryItem[] {
     if (!userId) return [];
 
     const stmt: Database.Statement = db.prepare(`
-        SELECT * FROM inventory WHERE user_id = ? ORDER BY created_at DESC
+        SELECT
+            i.inventory_id,
+            i.user_id,
+            i.item_id,
+            s.item_name,
+            i.created_at,
+            i.updated_at
+        FROM inventory i
+        JOIN shop s ON i.item_id = s.item_id
+        WHERE i.user_id = ?
+        ORDER BY i.created_at DESC
     `);
-    const results: InventoryItem[] = stmt.all(userId) as InventoryItem[];
-    return results;
+    return stmt.all(userId) as InventoryItem[];
 }
 
+// return the number of an item in a user's inventory
 export function getItemCount(userId: string, itemId: number): number {
     if (!userId || !itemId) return 0;
 
@@ -69,7 +79,16 @@ export function getInventoryItem(inventoryId: number): InventoryItem | null {
     if (!inventoryId) return null;
 
     const stmt: Database.Statement = db.prepare(`
-        SELECT * FROM inventory WHERE inventory_id = ?
+        SELECT
+            i.inventory_id,
+            i.user_id,
+            i.item_id,
+            s.item_name,
+            i.created_at,
+            i.updated_at
+        FROM inventory i
+        JOIN shop s ON i.item_id = s.item_id
+        WHERE i.inventory_id = ?
     `);
     const result: InventoryItem | undefined = stmt.get(inventoryId) as InventoryItem | undefined;
     return result || null;
