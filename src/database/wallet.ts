@@ -55,6 +55,13 @@ export function deduct(userId: string, amount: number): boolean {
     return info.changes > 0;
 }
 
+export function getAllWallets(): { user_id: string; balance: number }[] {
+    const stmt: Database.Statement = db.prepare(`
+        SELECT user_id, balance FROM wallet ORDER BY balance DESC
+    `);
+    return stmt.all() as { user_id: string; balance: number }[];
+}
+
 // helper functions
 function accountExists(userId: string): boolean {
     const stmt: Database.Statement = db.prepare(`

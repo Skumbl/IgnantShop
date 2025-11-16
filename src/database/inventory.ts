@@ -104,6 +104,20 @@ export function clearUserInventory(userId: string): boolean {
     return result.changes > 0;
 }
 
+export function getUserInventoryValue(userId: string): number {
+    if (!userId) return 0;
+
+    const stmt: Database.Statement = db.prepare(`
+        SELECT SUM(s.price) as total_value
+        FROM inventory i
+        JOIN shop s ON i.item_id = s.item_id
+        WHERE i.user_id = ?
+    `);
+    const result: { total_value: number | null } = stmt.get(userId) as { total_value: number | null };
+    return result.total_value || 0;
+}
+
+
 // Helper functions
 function inventoryItemExists(inventoryId: number): boolean {
     const stmt: Database.Statement = db.prepare(`
