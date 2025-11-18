@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
-import type { ChatInputCommandInteraction, User } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import type { Command } from '../../types/index.js';
 import { getUserInventory } from '../../database/inventory.js';
 import type { InventoryItem } from '../../database/inventory.js';
@@ -26,7 +26,8 @@ export default {
         inventory.forEach((item: InventoryItem) => {
             if (itemCounts.has(item.item_id)) {
                 itemCounts.get(item.item_id)!.count++;
-            } else {
+            }
+            else {
                 itemCounts.set(item.item_id, { name: item.item_name, count: 1 });
             }
         });
