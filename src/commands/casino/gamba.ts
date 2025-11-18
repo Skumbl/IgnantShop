@@ -13,6 +13,7 @@ export default {
                 .setRequired(true),
         ),
     execute: async (interaction: ChatInputCommandInteraction): Promise<void> => {
+        const userId: string = interaction.user.id;
         const bet: number | null = interaction.options.getNumber('bet');
 
         if (!bet || bet <= 0) {
@@ -23,7 +24,7 @@ export default {
             return;
         }
 
-        const balance: number | null = getBalance(interaction.user.id);
+        const balance: number | null = getBalance(userId);
 
         if (balance === null || bet > balance) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
@@ -33,7 +34,7 @@ export default {
             return;
         }
 
-        deduct(interaction.user.id, bet);
+        deduct(userId, bet);
 
         const slot1: number = Math.floor(Math.random() * 10);
         const slot2: number = Math.floor(Math.random() * 10);
@@ -63,7 +64,7 @@ export default {
         }
 
         if (winnings > 0) {
-            award(interaction.user.id, winnings);
+            award(userId, winnings);
         }
 
         const profit: number = winnings - bet;
