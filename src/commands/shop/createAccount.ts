@@ -3,6 +3,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import type { User } from 'discord.js';
 import type { Command } from '../../types/index.js';
 import { createNewAccount } from '../../database/wallet.js';
+import { isIgnant } from '../../utils/auth.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -20,6 +21,13 @@ export default {
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const accountHolder: User | null = interaction.options.getUser('user');
         const accountBalance: number | null = interaction.options.getNumber('balance');
+        if (!isIgnant(interaction.user.id)) {
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(0xFF1A00)
+                .setDescription('You are not Ignant, I don\'t need to listen to you');
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            return;
+        }
 
         if (!accountHolder || !accountBalance) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
