@@ -48,7 +48,10 @@ export function award(userId: string, amount: number): boolean {
 
 export function deduct(userId: string, amount: number): boolean {
     if (!userId || amount <= 0 || !accountExists(userId)) return false;
-    if (getBalance(userId) != null && getBalance(userId) < amount) return false;
+
+    const balance: number | null = getBalance(userId);
+    if (balance == null || balance < amount) return false;
+
     const stmt: Database.Statement = db.prepare(`
         UPDATE wallet SET balance = balance - ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?
     `);
