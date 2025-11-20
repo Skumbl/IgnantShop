@@ -8,7 +8,9 @@ export default {
         .setName('balance')
         .setDescription('Check your balance'),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-        const balance_amount: number | null = getBalance(interaction.user.id);
+        const userId: string = interaction.user.id;
+        const balance_amount: number | null = getBalance(userId);
+        const colbyCoinGif: string = 'https://imgur.com/brnP6lL.gif';
 
         if (balance_amount === null) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
@@ -22,8 +24,9 @@ export default {
             const brokeEmbed: EmbedBuilder = new EmbedBuilder()
                 .setColor(0xFF1A00)
                 .setTitle('BROKE')
-                .setDescription(`${interaction.user.username} has **0** Ignant Points`)
-                .setTimestamp();
+                .setDescription(`${interaction.user.displayName} has **0** Ignant Points`)
+                .setTimestamp()
+                .setImage(colbyCoinGif);
             await interaction.reply({ embeds: [brokeEmbed] });
             return;
         }
@@ -31,8 +34,9 @@ export default {
         const balanceEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(0x0066FF)
             .setTitle('Balance')
-            .setDescription(`${interaction.user.username} has **${balance_amount}** Ignant Points`)
-            .setTimestamp();
+            .setDescription(`${interaction.user.displayName} has **${balance_amount}** Ignant Points`)
+            .setTimestamp()
+            .setImage(colbyCoinGif);
         await interaction.reply({ embeds: [balanceEmbed] });
     },
 } satisfies Command;
