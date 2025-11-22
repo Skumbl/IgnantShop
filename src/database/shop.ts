@@ -30,7 +30,7 @@ export function getShopItem(itemId: number): ShopItem | null {
 
 export function getAllShopItems(): ShopItem[] {
     const stmt: Database.Statement = db.prepare(`
-        SELECT * FROM shop ORDER BY item_name ASC
+        SELECT * FROM shop ORDER BY price ASC
     `);
     return stmt.all() as ShopItem[];
 }

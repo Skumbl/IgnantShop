@@ -53,7 +53,5 @@
 //             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
 //             return;
 //         }
-
-
 //     }
 // } satisfies Command;
