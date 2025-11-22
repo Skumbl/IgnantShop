@@ -117,6 +117,16 @@ export function getUserInventoryValue(userId: string): number {
     return result.total_value || 0;
 }
 
+export function findInventoryId(userId: string, itemId: number): number | null {
+    if (!userId || !itemId) return null;
+
+    const stmt: Database.Statement = db.prepare(`
+        SELECT inventory_id FROM inventory WHERE user_id = ? AND item_id = ?
+    `);
+    const result: { inventory_id: number | null } = stmt.get(userId, itemId) as { inventory_id: number | null };
+    return result.inventory_id || null;
+}
+
 
 // Helper functions
 function inventoryItemExists(inventoryId: number): boolean {
