@@ -11,19 +11,19 @@ export default {
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const allShopItems: ShopItem[] = getAllShopItems();
         const colbyCoinImage: string = 'https://imgur.com/yWDKuJB.png';
-
-        // make the display string's width dynamic based of column length to ugly wrapping
-        const maxNameLength: number = Math.max(19,
-            ...allShopItems.map((item: ShopItem) => item.item_name.length));
+        const MAX_NAME_LENGTH: number = 25;
 
         const shopString: string =
             '**All Items For Sale**\n\n'
             + '```\n'
-            + `ID  | Item Name${' '.repeat(maxNameLength - 9)} | Price\n`
-            + `----+${'-'.repeat(maxNameLength + 2)}+-------\n`
-            + allShopItems.map((item: ShopItem) =>
-                `${item.item_id.toString().padEnd(3)} | ${item.item_name.padEnd(maxNameLength)} | ${item.price} coins`,
-            ).join('\n')
+            + 'ID  | Item Name                 | Price\n'
+            + '----+---------------------------+-------\n'
+            + allShopItems.map((item: ShopItem) => {
+                const truncatedName: string = item.item_name.length > MAX_NAME_LENGTH
+                    ? item.item_name.substring(0, MAX_NAME_LENGTH - 3) + '...'
+                    : item.item_name.padEnd(MAX_NAME_LENGTH);
+                return `${item.item_id.toString().padEnd(3)} | ${truncatedName} | ${item.price} coins`;
+            }).join('\n')
             + '\n```';
 
         const shopEmbed: EmbedBuilder = new EmbedBuilder()
