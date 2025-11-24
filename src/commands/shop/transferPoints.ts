@@ -10,13 +10,13 @@ export default {
         .addUserOption((option: any) =>
             option.setName('user')
                 .setDescription('The user to transfer points to')
-                .setRequired(true)
+                .setRequired(true),
         )
         .addIntegerOption((option: any) =>
             option.setName('amount')
                 .setDescription('The amount of points to transfer')
                 .setRequired(true)
-                .setMinValue(1)
+                .setMinValue(1),
         ),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const user: User | null = interaction.user;
@@ -60,5 +60,5 @@ export default {
             .setDescription(`Successfully transferred ${amount} points to ${user.username}.`)
             .setTimestamp();
         await interaction.reply({ embeds: [successEmbed] });
-    }
+    },
 } satisfies Command;

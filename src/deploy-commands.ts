@@ -21,7 +21,7 @@ const commandFolders: string[] = fs.readdirSync(folderPath);
 for (const folder of commandFolders) {
     const commandsPath: string = path.join(folderPath, folder);
     const commandFiles: string[] = fs.readdirSync(commandsPath).filter((file: string) =>
-        (file.endsWith('.ts') || file.endsWith('.js')) && !file.endsWith('.d.ts')
+        (file.endsWith('.ts') || file.endsWith('.js')) && !file.endsWith('.d.ts'),
     );
 
     // loop through each files

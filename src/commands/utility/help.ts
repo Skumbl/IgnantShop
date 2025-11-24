@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder } from '@discordjs/builders';
+import { colors } from '../../config/colors.js';
 
 const documentation: string = `**IgnantShop Discord Bot**
 A virtual economy system with shops, inventory, and gambling.
@@ -32,7 +33,7 @@ export default {
         const embed: EmbedBuilder = new EmbedBuilder()
             .setTitle('IgnantShop Commands')
             .setDescription(documentation)
-            .setColor(0xf18b72);
+            .setColor(colors.purple);
         await interaction.reply({ embeds: [embed] });
-    }
-}
+    },
+};

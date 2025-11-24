@@ -5,6 +5,7 @@ import { addItemToInventory, getItemCount } from '../../database/inventory.js';
 import { getShopItem } from '../../database/shop.js';
 import type { ShopItem } from '../../database/shop.js';
 import type { Command } from '../../types/index.js';
+import { colors } from '../../config/colors.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -23,7 +24,7 @@ export default {
 
         if (item === null) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('Item not found');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -31,7 +32,7 @@ export default {
 
         if (balance === null) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('You don\'t have an account or you\'re BROKE');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -39,7 +40,7 @@ export default {
 
         if (balance < item.price) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setTitle('Insufficient Funds')
                 .setDescription(`You need **${item.price}** coins but only have **${balance}** coins`);
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
@@ -52,7 +53,7 @@ export default {
             const newBalance: number = balance - item.price;
 
             const successEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0x6600FF)
+                .setColor(colors.purple)
                 .setTitle('Purchase Successful')
                 .setDescription(`You purchased **${item.item_name}**`)
                 .addFields(
@@ -65,7 +66,7 @@ export default {
         }
         else {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('Could not complete purchase. Database error.');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         }

@@ -3,6 +3,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import type { Command } from '../../types/index.js';
 import { getAllWallets } from '../../database/wallet.js';
 import { getUserInventoryValue } from '../../database/inventory.js';
+import { colors } from '../../config/colors.js';
 
 interface LeaderboardEntry {
     user_id: string;
@@ -20,7 +21,7 @@ export default {
 
         if (wallets.length === 0) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('No accounts found');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -50,7 +51,7 @@ export default {
             .join('\n\n');
 
         const leaderboardEmbed: EmbedBuilder = new EmbedBuilder()
-            .setColor(0x0066FF)
+            .setColor(colors.yellow)
             .setTitle('Ignant Points Leaderboard')
             .setDescription(leaderboardText || 'No data available')
             .setFooter({ text: `Total accounts: ${wallets.length}` })

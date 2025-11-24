@@ -2,6 +2,7 @@ import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { isIgnant } from '../../utils/auth.js';
 import { award } from '../../database/wallet.js';
+import { colors } from '../../config/colors.js';
 import type { Command } from '../../types/index.js';
 
 export default {
@@ -26,7 +27,7 @@ export default {
 
         if (!isIgnant(interaction.user.id)) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('You are not Ignant, I don\'t need to listen to you');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -34,7 +35,7 @@ export default {
 
         if (!user) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('Invalid Target User');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -44,7 +45,7 @@ export default {
 
         if (result) {
             const successEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF9900)
+                .setColor(colors.yellow)
                 .setTitle('Coins Awarded')
                 .setDescription(`Awarded **${amount}** Ignant Coin(s) to ${user}`)
                 .setTimestamp();
@@ -52,7 +53,7 @@ export default {
         }
         else {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('Failed to award ignant coin(s)');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;

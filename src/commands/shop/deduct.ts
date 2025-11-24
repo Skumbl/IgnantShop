@@ -3,6 +3,7 @@ import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { isIgnant } from '../../utils/auth.js';
 import type { Command } from '../../types/index.js';
 import { deduct, getBalance } from '../../database/wallet.js';
+import { colors } from '../../config/colors.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -22,7 +23,7 @@ export default {
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         if (!isIgnant(interaction.user.id)) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('You are not Ignant, I don\'t need to listen to you');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -33,7 +34,7 @@ export default {
 
         if (!user) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('Invalid User');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -43,7 +44,7 @@ export default {
 
         if (result) {
             const successEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0x66B266)
+                .setColor(colors.blue)
                 .setTitle('Coins Deducted')
                 .setDescription(
                     `Deducted **${amount}** coin(s) from ${user}\n
@@ -53,7 +54,7 @@ export default {
         }
         else {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription(`Failed to deduct ${amount} coins from ${user}. Insufficient balance or account doesn't exist.`);
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         }

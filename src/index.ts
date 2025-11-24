@@ -49,7 +49,7 @@ async function loadCommands(): Promise<void> {
 async function loadEvents(): Promise<void> {
     const eventsPath: string = path.join(import.meta.dirname, 'events');
     const eventsFiles: string[] = fs.readdirSync(eventsPath).filter((file: string) =>
-        (file.endsWith('.ts') || file.endsWith('.js')) && !file.endsWith('.d.ts')
+        (file.endsWith('.ts') || file.endsWith('.js')) && !file.endsWith('.d.ts'),
     );
 
     for (const file of eventsFiles) {

@@ -3,6 +3,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 import { getAllShopItems, type ShopItem } from '../../database/shop.js';
 import type { Command } from '../../types/index.js';
+import { colors } from '../../config/colors.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -28,7 +29,7 @@ export default {
 
         const shopEmbed: EmbedBuilder = new EmbedBuilder()
             .setTitle('Shop')
-            .setColor(0x00FF99)
+            .setColor(colors.purple)
             .setDescription(shopString)
             .setImage(colbyCoinImage);
 

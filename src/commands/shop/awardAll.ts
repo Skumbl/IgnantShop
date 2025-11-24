@@ -1,6 +1,7 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { award, getAllWallets } from '../../database/wallet.js';
 import type { ChatInputCommandInteraction, GuildMember } from 'discord.js';
+import { colors } from '../../config/colors.js';
 import type { Command } from '../../types/index.js';
 
 interface walletEntry {
@@ -15,25 +16,22 @@ export default {
         .addNumberOption((option: any) =>
             option.setName('amount')
                 .setDescription('The amount of points to award')
-                .setRequired(true)
-        )
-        .addStringOption((option: any) =>
-            option.setName('reason')
-                .setDescription('The reason for the award')
-                .setRequired(false)
+                .setRequired(true),
         ),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const amount: number | null = interaction.options.getNumber('amount');
-        const reason: string | null = interaction.options.getString('reason');
         const failedUserIds: string[] = [];
 
         if (!amount || amount <= 0) {
-            await interaction.reply('Please provide a valid amount.');
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setTitle('Invalid Amount')
+                .setDescription('Please provide a valid amount.')
+                .setColor(colors.red);
+            await interaction.reply({ embeds: [errorEmbed] });
             return;
         }
 
         const wallets: walletEntry[] = getAllWallets();
-
         for (const wallet of wallets) {
             if (!award(wallet.user_id, amount)) {
                 failedUserIds.push(wallet.user_id);
@@ -46,15 +44,28 @@ export default {
                     try {
                         const member: GuildMember = await interaction.guild!.members.fetch(userId);
                         return member.displayName;
-                    } catch (error) {
+                    }
+                    catch (error) {
                         console.error(`Failed to fetch user ${userId}:`, error);
                         return 'Unknown User';
                     }
-                })
+                }),
             );
-            await interaction.reply(`Awarded ${amount} points to all accounts except ${displayNames.join(', ')}.`);
-        } else {
-            await interaction.reply(`Awarded ${amount} points to all accounts.`);
+            const excluded: string = displayNames.length > 0 ? `\n\n*Excluded: ${displayNames.join(', ')}*` : '';
+            const successEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(colors.green)
+                .setTitle('Award All')
+                .setDescription(`Awarded **${amount}** Ignant Coin(s) to all accounts.\nExcept${excluded}`)
+                .setTimestamp();
+            await interaction.reply({ embeds: [successEmbed] });
         }
-    }
+        else {
+            const successEmbed: EmbedBuilder = new EmbedBuilder()
+                .setColor(colors.green)
+                .setTitle('Award All')
+                .setDescription(`Awarded **${amount}** Ignant Coin(s) to all accounts.`)
+                .setTimestamp();
+            await interaction.reply({ embeds: [successEmbed] });
+        }
+    },
 } satisfies Command;

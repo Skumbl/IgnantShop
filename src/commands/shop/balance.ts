@@ -2,6 +2,7 @@ import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import type { Command } from '../../types/index.js';
 import { getBalance } from '../../database/wallet.js';
+import { colors } from '../../config/colors.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -14,7 +15,7 @@ export default {
 
         if (balance_amount === null) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('You don\'t have an account yet, shidass');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -22,7 +23,7 @@ export default {
 
         if (balance_amount === 0) {
             const brokeEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setTitle('BROKE')
                 .setDescription(`${interaction.user.displayName} has **0** Ignant Points`)
                 .setTimestamp()
@@ -32,7 +33,7 @@ export default {
         }
 
         const balanceEmbed: EmbedBuilder = new EmbedBuilder()
-            .setColor(0x0066FF)
+            .setColor(colors.blue)
             .setTitle('Balance')
             .setDescription(`${interaction.user.displayName} has **${balance_amount}** Ignant Points`)
             .setTimestamp()

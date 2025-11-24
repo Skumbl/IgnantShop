@@ -4,6 +4,7 @@ import type { User } from 'discord.js';
 import type { Command } from '../../types/index.js';
 import { createNewAccount } from '../../database/wallet.js';
 import { isIgnant } from '../../utils/auth.js';
+import { colors } from '../../config/colors.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -23,7 +24,7 @@ export default {
         const accountBalance: number | null = interaction.options.getNumber('balance');
         if (!isIgnant(interaction.user.id)) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('You are not Ignant, I don\'t need to listen to you');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -31,7 +32,7 @@ export default {
 
         if (!accountHolder || !accountBalance) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('Invalid user or balance');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -41,7 +42,7 @@ export default {
 
         if (accountCreated) {
             const successEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0x66FFB2)
+                .setColor(colors.green)
                 .setTitle('Account Created')
                 .setDescription(`Account created for ${accountHolder}`)
                 .addFields(
@@ -52,7 +53,7 @@ export default {
         }
         else {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('Cannot create account. Account may already exist.');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         }

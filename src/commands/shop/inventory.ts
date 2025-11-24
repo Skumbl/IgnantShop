@@ -3,6 +3,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import type { Command } from '../../types/index.js';
 import { getUserInventory } from '../../database/inventory.js';
 import type { InventoryItem } from '../../database/inventory.js';
+import { colors } from '../../config/colors.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -14,7 +15,7 @@ export default {
 
         if (inventory.length === 0) {
             const emptyEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setTitle('Your Inventory')
                 .setDescription('Your inventory is empty');
             await interaction.reply({ embeds: [emptyEmbed] });
@@ -37,7 +38,7 @@ export default {
             .join('\n');
 
         const inventoryEmbed: EmbedBuilder = new EmbedBuilder()
-            .setColor(0x0066FF)
+            .setColor(colors.blue)
             .setTitle('Your Inventory')
             .setDescription(inventoryText)
             .setFooter({ text: `Total items: ${inventory.length}` })
