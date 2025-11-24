@@ -21,14 +21,13 @@ export default {
                 .setEphemeral(true),
         ),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-        const userId: string = interaction.user.id;
         const amount: number | null = interaction.options.getNumber('amount');
         const failedUserIds: string[] = [];
 
-        if (!isIgnant(userId)) {
+        if (!isIgnant(interaction.user.id)) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setDescription('You are not Ignant, I don\'t need to listen to you')
-                .setColor(colors.red);
+                .setColor(colors.red)
+                .setDescription('You are not Ignant, I don\'t need to listen to you');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
         }
