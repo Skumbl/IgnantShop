@@ -3,6 +3,7 @@ import { award, getAllWallets } from '../../database/wallet.js';
 import type { ChatInputCommandInteraction, GuildMember } from 'discord.js';
 import { colors } from '../../config/colors.js';
 import type { Command } from '../../types/index.js';
+import { isIgnant } from '../../utils/auth.js';
 
 interface walletEntry {
     user_id: string;
@@ -19,8 +20,18 @@ export default {
                 .setRequired(true),
         ),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+        const userId: string = interaction.user.id;
         const amount: number | null = interaction.options.getNumber('amount');
         const failedUserIds: string[] = [];
+
+        if (isIgnant(userId)) {
+            const errorEmbed: EmbedBuilder = new EmbedBuilder()
+                .setTitle('Insufficient Permissions')
+                .setDescription('You do not have permission to use this command.')
+                .setColor(colors.red);
+            await interaction.reply({ embeds: [errorEmbed] });
+            return;
+        }
 
         if (!amount || amount <= 0) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
