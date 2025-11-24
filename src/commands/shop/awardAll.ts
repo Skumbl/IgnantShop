@@ -17,8 +17,7 @@ export default {
         .addNumberOption((option: any) =>
             option.setName('amount')
                 .setDescription('The amount of points to award')
-                .setRequired(true)
-                .setEphemeral(true),
+                .setRequired(true),
         ),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const amount: number | null = interaction.options.getNumber('amount');
