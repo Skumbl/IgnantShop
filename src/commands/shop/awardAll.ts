@@ -24,7 +24,7 @@ export default {
         const amount: number | null = interaction.options.getNumber('amount');
         const failedUserIds: string[] = [];
 
-        if (isIgnant(userId)) {
+        if (!isIgnant(userId)) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
                 .setTitle('Insufficient Permissions')
                 .setDescription('You do not have permission to use this command.')
