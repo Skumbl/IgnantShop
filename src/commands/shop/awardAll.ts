@@ -17,7 +17,8 @@ export default {
         .addNumberOption((option: any) =>
             option.setName('amount')
                 .setDescription('The amount of points to award')
-                .setRequired(true),
+                .setRequired(true)
+                .setEphemeral(true),
         ),
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const userId: string = interaction.user.id;
@@ -26,10 +27,9 @@ export default {
 
         if (!isIgnant(userId)) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setTitle('Insufficient Permissions')
-                .setDescription('You do not have permission to use this command.')
+                .setDescription('You are not Ignant, I don\'t need to listen to you')
                 .setColor(colors.red);
-            await interaction.reply({ embeds: [errorEmbed] });
+            await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
         }
 
