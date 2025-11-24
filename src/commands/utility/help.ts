@@ -9,6 +9,8 @@ A virtual economy system with shops, inventory, and gambling.
 **Economy Commands**
 \`/balance\` - Check your coin balance
 \`/leaderboard\` - View top users by total worth
+\`/transfer-points\` - Send coins to another user
+\`/transfer-coins\` - Send coins to another user
 
 **Shop Commands**
 \`/shop\` - View all available items
@@ -21,8 +23,9 @@ A virtual economy system with shops, inventory, and gambling.
 \`/blackjack\` - Play blackjack
 
 **Admin Commands**
-\`/create-account\` - Create a new user account
+\`/create-account\` - Create a new user account (Ignant only)
 \`/award\` - Give coins to a user (Ignant only)
+\`/award-all\` - Give coins to all users (Ignant only)
 \`/deduct\` - Remove coins from a user (Ignant only)`;
 
 export default {
