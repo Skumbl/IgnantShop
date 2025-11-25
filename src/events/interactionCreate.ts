@@ -59,6 +59,7 @@ export default {
 } satisfies Event<Events.InteractionCreate>;
 
 async function handleBlackjackHit(interaction: ButtonInteraction): Promise<void> {
+    const user: User = interaction.user;
     const userId: string = interaction.user.id;
     const game: BlackjackGame | undefined = getGame(userId);
 
@@ -96,7 +97,7 @@ async function handleBlackjackHit(interaction: ButtonInteraction): Promise<void>
         const bustEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(colors.red)
             .setTitle('Blackjack')
-            .setDescription(`### Dealer: \n${formatHand(game.dealerHand, false)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`);
+            .setDescription(`Player: ${user.displayName} \n### Dealer: \n${formatHand(game.dealerHand, false)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`);
 
         await interaction.followUp({ embeds: [bustEmbed], ephemeral: false });
         return;
