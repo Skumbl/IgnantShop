@@ -17,6 +17,7 @@ A virtual economy system with shops, inventory, and gambling.
 \`/buy\` - Purchase an item from the shop
 \`/create-listing\` - Create a new shop item (Ignant only)
 \`/destroy-listing\` - Remove a shop item (Ignant only)
+\`/return - returns the item for 70% of it's buy value
 
 **Gambling Commands**
 \`/gamba\` - Play the slot machine

@@ -34,8 +34,7 @@ export default {
         });
 
         const inventoryText: string = Array.from(itemCounts.entries())
-            .map(([itemId, data]: [number, { name: string; count: number }]) => `**${data.name}** x${data.count}`)
-            .join('\n');
+            .map(([itemId, data]: [number, { name: string; count: number }]) => `id: ${itemId} **${data.name}** x${data.count}`).join('\n');
 
         const inventoryEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(colors.blue)
