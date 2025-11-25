@@ -1,5 +1,5 @@
 import { Events, MessageFlags, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import type { Interaction, ButtonInteraction } from 'discord.js';
+import type { Interaction, ButtonInteraction, User } from 'discord.js';
 import type { ExtendedClient } from '../client.js';
 import type { Event, Command } from '../types/index.js';
 import {
@@ -123,6 +123,7 @@ async function handleBlackjackHit(interaction: ButtonInteraction): Promise<void>
 }
 
 async function handleBlackjackStand(interaction: ButtonInteraction): Promise<void> {
+    const user: User = interaction.user;
     const userId: string = interaction.user.id;
     const game: BlackjackGame | undefined = getGame(userId);
 
@@ -157,7 +158,7 @@ async function handleBlackjackStand(interaction: ButtonInteraction): Promise<voi
     const resultEmbed: EmbedBuilder = new EmbedBuilder()
         .setColor(outcome.payout > game.bet ? colors.green : colors.red)
         .setTitle('Blackjack')
-        .setDescription(`### Dealer: \n${formatHand(game.dealerHand, false)}\n**Total: ${calculateHand(game.dealerHand)}**\n\n### Player: \n${formatHand(game.playerHand, false)}\n**Total: ${calculateHand(game.playerHand)}**\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`);
+        .setDescription(`Player: ${user.displayName} \n### Dealer: \n${formatHand(game.dealerHand, false)}\n**Total: ${calculateHand(game.dealerHand)}**\n\n### Player: \n${formatHand(game.playerHand, false)}\n**Total: ${calculateHand(game.playerHand)}**\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`);
 
     await interaction.followUp({ embeds: [resultEmbed], ephemeral: false });
 }

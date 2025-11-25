@@ -67,7 +67,7 @@ export default {
         const successEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(colors.green)
             .setTitle('Transfer Success')
-            .setDescription(`Successfully transferred 1 ${item.item_name} to ${user.username}.`)
+            .setDescription(`Successfully transferred 1 ${item.item_name} to ${targetUser.displayName}.`)
             .setTimestamp();
         await interaction.reply({ embeds: [successEmbed] });
     },

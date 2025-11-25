@@ -57,7 +57,7 @@ export default {
         const successEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(0x90B494)
             .setTitle('Transfer Success')
-            .setDescription(`Successfully transferred ${amount} points to ${user.username}.`)
+            .setDescription(`Successfully transferred ${amount} points to ${targetUser.displayName}.`)
             .setTimestamp();
         await interaction.reply({ embeds: [successEmbed] });
     },
