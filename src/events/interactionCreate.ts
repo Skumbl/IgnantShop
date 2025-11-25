@@ -97,7 +97,8 @@ async function handleBlackjackHit(interaction: ButtonInteraction): Promise<void>
         const bustEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(colors.red)
             .setTitle('Blackjack')
-            .setDescription(`Player: ${user.displayName} \n### Dealer: \n${formatHand(game.dealerHand, false)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`);
+            .setDescription(`Player: ${user.displayName} \n### Dealer: \n${formatHand(game.dealerHand, false)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`)
+            .setTimestamp();
 
         await interaction.followUp({ embeds: [bustEmbed], ephemeral: false });
         return;
