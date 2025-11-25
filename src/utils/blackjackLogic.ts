@@ -63,6 +63,7 @@ export function getGame(userId: string): BlackjackGame | undefined {
 }
 
 export function clearActiveGames(): void {
+    console.log('[Casino] Clearing active blackjack games');
     activeGames.clear();
 }
 
