@@ -86,11 +86,11 @@ export default {
         const buttons: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId('hit')
+                    .setCustomId('blackjack_hit')
                     .setLabel('Hit')
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
-                    .setCustomId('stand')
+                    .setCustomId('blackjack_stand')
                     .setLabel('Stand')
                     .setStyle(ButtonStyle.Secondary),
             );
