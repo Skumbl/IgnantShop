@@ -86,9 +86,11 @@ export default {
         const buttons: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
+                    .setCustomId('hit')
                     .setLabel('Hit')
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
+                    .setCustomId('stand')
                     .setLabel('Stand')
                     .setStyle(ButtonStyle.Secondary),
             );
