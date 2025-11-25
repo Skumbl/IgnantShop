@@ -12,7 +12,7 @@ export interface BlackjackGame {
 }
 
 const activeGames: Map<string, BlackjackGame> = new Map<string, BlackjackGame>();
-const dealerThreshold: number = 15;
+const dealerThreshold: number = 16;
 
 export function drawCard(): Card {
     const rand: number = Math.floor(Math.random() * 13) + 1;
