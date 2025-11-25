@@ -110,11 +110,9 @@ async function handleBlackjackHit(interaction: ButtonInteraction): Promise<void>
     const buttons: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
             new ButtonBuilder()
-                .setCustomId('blackjack_hit')
                 .setLabel('Hit')
                 .setStyle(ButtonStyle.Primary),
             new ButtonBuilder()
-                .setCustomId('blackjack_stand')
                 .setLabel('Stand')
                 .setStyle(ButtonStyle.Secondary),
         );
@@ -158,7 +156,8 @@ async function handleBlackjackStand(interaction: ButtonInteraction): Promise<voi
     const resultEmbed: EmbedBuilder = new EmbedBuilder()
         .setColor(outcome.payout > game.bet ? colors.green : colors.red)
         .setTitle('Blackjack')
-        .setDescription(`Player: ${user.displayName} \n### Dealer: \n${formatHand(game.dealerHand, false)}\n**Total: ${calculateHand(game.dealerHand)}**\n\n### Player: \n${formatHand(game.playerHand, false)}\n**Total: ${calculateHand(game.playerHand)}**\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`);
+        .setDescription(`Player: ${user.displayName} \n### Dealer: \n${formatHand(game.dealerHand, false)}\n**Total: ${calculateHand(game.dealerHand)}**\n\n### Player: \n${formatHand(game.playerHand, false)}\n**Total: ${calculateHand(game.playerHand)}**\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`)
+        .setTimestamp();
 
     await interaction.followUp({ embeds: [resultEmbed], ephemeral: false });
 }

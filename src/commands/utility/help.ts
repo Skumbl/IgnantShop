@@ -36,7 +36,9 @@ export default {
         const embed: EmbedBuilder = new EmbedBuilder()
             .setTitle('IgnantShop Commands')
             .setDescription(documentation)
-            .setColor(colors.purple);
+            .setColor(colors.purple)
+            .setTimestamp();
+
         await interaction.reply({ embeds: [embed] });
     },
 };

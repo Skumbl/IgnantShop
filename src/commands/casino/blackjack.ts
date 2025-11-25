@@ -80,7 +80,8 @@ export default {
         const startEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(colors.green)
             .setTitle('Blackjack')
-            .setDescription(`### Dealer: \n${formatHand(game.dealerHand, true)}\n\n### Player: \n${formatHand(game.playerHand, false)}`);
+            .setDescription(`### Dealer: \n${formatHand(game.dealerHand, true)}\n\n### Player: \n${formatHand(game.playerHand, false)}`)
+            .setTimestamp();
 
         const buttons: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(

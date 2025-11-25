@@ -31,7 +31,8 @@ export default {
             .setTitle('Shop')
             .setColor(colors.purple)
             .setDescription(shopString)
-            .setImage(colbyCoinImage);
+            .setImage(colbyCoinImage)
+            .setTimestamp();
 
         await interaction.reply({ embeds: [shopEmbed] });
     },
