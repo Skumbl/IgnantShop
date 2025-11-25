@@ -2,6 +2,7 @@ import { ExtendedClient } from './client.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { initDB } from './database/index.js';
+import { clearActiveGames } from './utils/blackjackLogic.js';
 import type { ClientEvents } from 'discord.js';
 import type { Command, Event } from './types/index.js';
 
@@ -9,6 +10,7 @@ const token: string | undefined = process.env.DISCORD_TOKEN;
 const client: ExtendedClient = new ExtendedClient();
 
 initDB();
+clearActiveGames();
 await loadCommands();
 await loadEvents();
 

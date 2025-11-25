@@ -57,8 +57,13 @@ export function startBlackjackGame(userId: string, bet: number): BlackjackGame {
     return game;
 }
 
+// check if my user has an active game going
 export function getGame(userId: string): BlackjackGame | undefined {
     return activeGames.get(userId);
+}
+
+export function clearActiveGames(): void {
+    activeGames.clear();
 }
 
 export function deleteGame(userId: string): void {

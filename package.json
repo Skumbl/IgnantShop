@@ -13,7 +13,7 @@
         "typecheck": "tsc --noEmit",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "dev": "tsx --env-file=.env src/index.ts",
+        "dev": "nodemon --exec tsx --env-file=.env src/index.ts",
         "build": "tsc",
         "start": "node --env-file=.env dist/index.js",
         "deploy": "tsx --env-file=.env src/deploy-commands.ts"
@@ -27,6 +27,7 @@
         "@typescript-eslint/eslint-plugin": "^8.46.2",
         "@typescript-eslint/parser": "^8.46.2",
         "eslint": "^8.57.1",
+        "nodemon": "^3.1.11",
         "ts-node": "^10.9.2",
         "tsx": "^4.20.6",
         "typescript": "^5.9.3"
