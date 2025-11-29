@@ -9,8 +9,10 @@ import {
     gameOutcome,
     formatHand,
     type BlackjackGame,
+    calculateHand,
 } from '../../utils/blackjackLogic.js';
 import { deduct, award, getBalance } from '../../database/wallet.js';
+import { addLostRecord } from '../../database/lost.js';
 import { colors } from '../../config/colors.js';
 
 export default {
@@ -62,25 +64,30 @@ export default {
 
         if (playerBlackjack || dealerBlackjack) {
             game.gameOver = true;
+            addLostRecord(userId, bet);
             const outcome: { result: string, payout: number } = gameOutcome(game);
 
             award(userId, outcome.payout);
             deleteGame(userId);
 
+            const newBalance: number | null = getBalance(userId);
             const resultEmbed: EmbedBuilder = new EmbedBuilder()
                 .setColor(outcome.payout > bet ? colors.green : colors.red)
                 .setTitle('Blackjack')
-                .setDescription(`### Dealer: \n${formatHand(game.dealerHand, false)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`);
+                .setDescription(`### Dealer: \n${formatHand(game.dealerHand, false)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout} \nBalance: ${newBalance}`);
 
             await interaction.reply({ embeds: [resultEmbed], ephemeral: false });
             return;
         }
 
         // Game continues - show buttons
+
+        const playerTotal: number = calculateHand(game.playerHand);
+
         const startEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(colors.green)
             .setTitle('Blackjack')
-            .setDescription(`### Dealer: \n${formatHand(game.dealerHand, true)}\n\n### Player: \n${formatHand(game.playerHand, false)}`)
+            .setDescription(`### Dealer: \n${formatHand(game.dealerHand, true)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n**Total: ${playerTotal}**`)
             .setTimestamp();
 
         const buttons: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()

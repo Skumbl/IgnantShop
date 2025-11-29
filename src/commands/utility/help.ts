@@ -17,11 +17,13 @@ A virtual economy system with shops, inventory, and gambling.
 - \`/buy\` - Purchase an item from the shop
 - \`/create-listing\` - Create a new shop item (Ignant only)
 - \`/destroy-listing\` - Remove a shop item (Ignant only)
-- \`/return\` - Returns the item for 70% of its buy value
+- \`/return\` - Returns the item for 70% of its buy values
 
 **Gambling Commands**
 - \`/gamba\` - Play the slot machine
 - \`/blackjack\` - Play blackjack
+- \`/lost\` - See how much money you've loast gambling
+- \`/loser-leaderboard\` - See the list of the biggest losers
 
 **Admin Commands**
 - \`/create-account\` - Create a new user account (Ignant only)

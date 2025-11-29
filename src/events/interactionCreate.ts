@@ -12,7 +12,8 @@ import {
     calculateHand,
     type BlackjackGame,
 } from '../utils/blackjackLogic.js';
-import { award } from '../database/wallet.js';
+import { award, getBalance } from '../database/wallet.js';
+import { addLostRecord } from '../database/lost.js';
 import { colors } from '../config/colors.js';
 
 export default {
@@ -85,8 +86,7 @@ async function handleBlackjackHit(interaction: ButtonInteraction): Promise<void>
     if (playerTotal > 21) {
         game.gameOver = true;
         const outcome: { result: string, payout: number } = gameOutcome(game);
-
-        award(userId, outcome.payout);
+        addLostRecord(userId, game.bet);
         deleteGame(userId);
 
         const privateEmbed: EmbedBuilder = new EmbedBuilder()
@@ -94,10 +94,12 @@ async function handleBlackjackHit(interaction: ButtonInteraction): Promise<void>
             .setDescription('Game over! Results posted below.');
         await interaction.update({ embeds: [privateEmbed], components: [] });
 
+        const newBalance: number | null = getBalance(userId);
+
         const bustEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(colors.red)
             .setTitle('Blackjack')
-            .setDescription(`Player: ${user.displayName} \n### Dealer: \n${formatHand(game.dealerHand, false)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`)
+            .setDescription(`Player: ${user.displayName} \n### Dealer: \n${formatHand(game.dealerHand, false)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout} \nBalance: ${newBalance}`)
             .setTimestamp();
 
         await interaction.followUp({ embeds: [bustEmbed], ephemeral: false });
@@ -107,7 +109,8 @@ async function handleBlackjackHit(interaction: ButtonInteraction): Promise<void>
     const hitEmbed: EmbedBuilder = new EmbedBuilder()
         .setColor(colors.green)
         .setTitle('Blackjack')
-        .setDescription(`### Dealer: \n${formatHand(game.dealerHand, true)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n**Total: ${playerTotal}**`);
+        .setDescription(`### Dealer: \n${formatHand(game.dealerHand, true)}\n\n### Player: \n${formatHand(game.playerHand, false)}\n**Total: ${playerTotal}**`)
+        .setTimestamp();
 
     const buttons: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
@@ -149,7 +152,12 @@ async function handleBlackjackStand(interaction: ButtonInteraction): Promise<voi
     dealerPlay(game);
     const outcome: { result: string, payout: number } = gameOutcome(game);
 
-    award(userId, outcome.payout);
+    if (outcome.payout > 0) {
+        award(userId, outcome.payout);
+    }
+    else if (outcome.payout === 0) {
+        addLostRecord(userId, game.bet);
+    }
     deleteGame(userId);
 
     const privateEmbed: EmbedBuilder = new EmbedBuilder()
@@ -157,10 +165,12 @@ async function handleBlackjackStand(interaction: ButtonInteraction): Promise<voi
         .setDescription('Game over! Results posted below.');
     await interaction.update({ embeds: [privateEmbed], components: [] });
 
+    const newBalance: number | null = getBalance(userId);
+
     const resultEmbed: EmbedBuilder = new EmbedBuilder()
         .setColor(outcome.payout > game.bet ? colors.green : colors.red)
         .setTitle('Blackjack')
-        .setDescription(`Player: ${user.displayName} \n### Dealer: \n${formatHand(game.dealerHand, false)}\n**Total: ${calculateHand(game.dealerHand)}**\n\n### Player: \n${formatHand(game.playerHand, false)}\n**Total: ${calculateHand(game.playerHand)}**\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout}`)
+        .setDescription(`Player: ${user.displayName} \n### Dealer: \n${formatHand(game.dealerHand, false)}\n**Total: ${calculateHand(game.dealerHand)}**\n\n### Player: \n${formatHand(game.playerHand, false)}\n**Total: ${calculateHand(game.playerHand)}**\n\n**${outcome.result}**\n💰 Payout: ${outcome.payout} \nCBalance: ${newBalance}`)
         .setTimestamp();
 
     await interaction.followUp({ embeds: [resultEmbed], ephemeral: false });

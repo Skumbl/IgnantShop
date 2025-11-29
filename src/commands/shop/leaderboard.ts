@@ -19,7 +19,7 @@ export default {
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const wallets: { user_id: string; balance: number }[] = getAllWallets();
 
-        if (wallets.length === 0) {
+        if (!wallets || wallets.length === 0) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
                 .setColor(colors.red)
                 .setDescription('No accounts found');

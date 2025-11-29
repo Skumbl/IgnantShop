@@ -2,6 +2,7 @@ import { SlashCommandBuilder, EmbedBuilder } from '@discordjs/builders';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { award, deduct, getBalance } from '../../database/wallet.js';
 import type { Command } from '../../types/index.js';
+import { addLostRecord } from '../../database/lost.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -45,22 +46,23 @@ export default {
 
         if (slot1 === slot2 && slot2 === slot3) {
             if (slot1 === 7) {
-                winnings = bet * 10;
+                winnings = bet * 100;
                 resultText = 'TRIPLE SEVENS JACKPOT!';
             }
             else {
-                winnings = bet * 5;
+                winnings = bet * 20;
                 resultText = 'TRIPLE MATCH!';
             }
         }
 
         else if (slot1 === slot2 || slot2 === slot3 || slot1 === slot3) {
-            winnings = bet * 2;
+            winnings = bet * 10;
             resultText = 'Double Match!';
         }
 
         else {
             resultText = 'No match...';
+            addLostRecord(userId, bet);
         }
 
         if (winnings > 0) {

@@ -46,5 +46,16 @@ export function initDB(): void {
         )
     `);
 
+    // user db for gambling losses
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS lost (
+            loss_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT NOT NULL UNIQUE,
+            amount INTEGER NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES wallet(user_id)
+        )
+    `);
     console.log('[Database] Database initialized');
 }
