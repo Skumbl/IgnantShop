@@ -36,7 +36,7 @@ export default {
             .map((data: LostLeaderboardEntry, index: number) => {
                 const medal: string = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
                 return `${medal} <@${data.user_id}>\n` +
-                    `   **Lost: ${data.amount} coins**`;
+                    `  **Lost: ${data.amount} coins**`;
             })
             .join('\n\n');
 

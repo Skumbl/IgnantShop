@@ -46,7 +46,7 @@ export default {
 
         if (slot1 === slot2 && slot2 === slot3) {
             if (slot1 === 7) {
-                winnings = bet * 100;
+                winnings = bet * 50;
                 resultText = 'TRIPLE SEVENS JACKPOT!';
             }
             else {
@@ -56,7 +56,7 @@ export default {
         }
 
         else if (slot1 === slot2 || slot2 === slot3 || slot1 === slot3) {
-            winnings = bet * 5;
+            winnings = bet * 2.5;
             resultText = 'Double Match!';
         }
 
