@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import type { Database as DatabaseType } from 'better-sqlite3';
 import path from 'node:path';
 import fs from 'node:fs';
+import { logSuccess } from './logger.js';
 
 const dbPath: string = path.join(import.meta.dirname, '..', 'data', 'ignantShop.db');
 
@@ -57,5 +58,6 @@ export function initDB(): void {
             FOREIGN KEY (user_id) REFERENCES wallet(user_id)
         )
     `);
+    logSuccess('init DB', 'all tables', {});
     console.log('[Database] Database initialized');
 }

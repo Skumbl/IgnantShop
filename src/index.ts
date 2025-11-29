@@ -5,10 +5,12 @@ import { initDB } from './database/index.js';
 import { clearActiveGames } from './utils/blackjackLogic.js';
 import type { ClientEvents } from 'discord.js';
 import type { Command, Event } from './types/index.js';
+import { createNewLogFile } from './database/logger.js';
 
 const token: string | undefined = process.env.DISCORD_TOKEN;
 const client: ExtendedClient = new ExtendedClient();
 
+createNewLogFile();
 initDB();
 clearActiveGames();
 await loadCommands();

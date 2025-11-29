@@ -1,5 +1,6 @@
 import { db } from './index.js';
 import type Database from 'better-sqlite3';
+import { logFailure } from './logger.js';
 
 export interface Wallet {
     user_id: string;
@@ -9,8 +10,15 @@ export interface Wallet {
 }
 
 export function createNewAccount(userId: string, amount: number): boolean {
-    if (!userId || amount < 0) return false;
-    if (accountExists(userId)) return false;
+    if (!userId || amount < 0) {
+        logFailure('createNewAccount', 'wallet', { userId, amount });
+        return false;
+    }
+    if (accountExists(userId)) {
+        logFailure('createNewAccount', 'wallet', { userId });
+        return false;
+    }
+
     const stmt: Database.Statement = db.prepare(`
         INSERT INTO wallet (user_id, balance, created_at, updated_at)
         VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
