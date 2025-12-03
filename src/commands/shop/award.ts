@@ -54,7 +54,7 @@ export default {
         else {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
                 .setColor(colors.red)
-                .setDescription('Failed to award ignant coin(s)');
+                .setDescription('Failed to award ignant coin(s), as Ignant to create an account');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
         }

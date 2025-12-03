@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const logDirectory: string = path.join(__dirname, '..', '..', 'logs');
+const logDirectory: string = path.join(import.meta.dirname, '..', '..', 'logs');
 let logFilePath: string = '';
 
 export function createNewLogFile(): void {
@@ -46,8 +46,18 @@ export function logSuccess(operation: string, table: string, data: any): void {
         data,
     };
     const logMessage: string = loggerOptionsToString(options);
+
+    if (!logFilePath) {
+        console.error('[Logger] Log file not initialized');
+        return;
+    }
+
     console.log(logMessage);
-    fs.appendFileSync(logFilePath, logMessage + '\n');
+    fs.appendFile(logFilePath, logMessage + '\n', (err: NodeJS.ErrnoException | null) => {
+        if (err) {
+            console.error(err);
+        }
+    });
 }
 
 export function logFailure(operation: string, table: string, data: any): void {
@@ -58,8 +68,18 @@ export function logFailure(operation: string, table: string, data: any): void {
         data,
     };
     const logMessage: string = loggerOptionsToString(options);
+
+    if (!logFilePath) {
+        console.error('[Logger] Log file not initialized');
+        return;
+    }
+
     console.log(logMessage);
-    fs.appendFileSync(logFilePath, logMessage + '\n');
+    fs.appendFile(logFilePath, logMessage + '\n', (err: NodeJS.ErrnoException | null) => {
+        if (err) {
+            console.error(err);
+        }
+    });
 }
 
 export function logWarning(operation: string, table: string, data: any): void {
@@ -70,6 +90,16 @@ export function logWarning(operation: string, table: string, data: any): void {
         data,
     };
     const logMessage: string = loggerOptionsToString(options);
+
+    if (!logFilePath) {
+        console.error('[Logger] Log file not initialized');
+        return;
+    }
+
     console.log(logMessage);
-    fs.appendFileSync(logFilePath, logMessage + '\n');
+    fs.appendFile(logFilePath, logMessage + '\n', (err: NodeJS.ErrnoException | null) => {
+        if (err) {
+            console.error(err);
+        }
+    });
 }

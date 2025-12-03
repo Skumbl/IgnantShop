@@ -3,6 +3,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { award, deduct, getBalance } from '../../database/wallet.js';
 import type { Command } from '../../types/index.js';
 import { addLostRecord } from '../../database/lost.js';
+import { colors } from '../../config/colors.js';
 
 export default {
     data: new SlashCommandBuilder()
@@ -19,7 +20,7 @@ export default {
 
         if (!bet || bet <= 0) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription('Please enter a valid bet amount.');
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -29,7 +30,7 @@ export default {
 
         if (balance === null || bet > balance) {
             const errorEmbed: EmbedBuilder = new EmbedBuilder()
-                .setColor(0xFF1A00)
+                .setColor(colors.red)
                 .setDescription(`You don't have enough coins. Balance: ${balance || 0} coins`);
             await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
             return;
@@ -71,7 +72,7 @@ export default {
 
         const profit: number = winnings - bet;
         const newBalance: number = (balance || 0) - bet + winnings;
-        const embedColor: number = profit > 0 ? 0x00FF00 : profit === 0 ? 0xFFFF00 : 0xFF1A00;
+        const embedColor: number = profit > 0 ? colors.green : profit === 0 ? colors.yellow : colors.red;
 
         const slotEmbed: EmbedBuilder = new EmbedBuilder()
             .setColor(embedColor)

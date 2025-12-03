@@ -1,5 +1,6 @@
 import { db } from './index.js';
 import type Database from 'better-sqlite3';
+import { logFailure, logSuccess } from './logger.js';
 
 export interface ShopItem {
     item_id: number;
@@ -10,13 +11,21 @@ export interface ShopItem {
 }
 
 export function createItem(itemName: string, itemValue: number): boolean {
-    if (!itemName || !itemValue || itemExistsByName(itemName)) return false;
+    if (!itemName || !itemValue || itemExistsByName(itemName)) {
+        logFailure('createItem', 'shop', 'Invalid item name or value');
+        return false;
+    }
     const stmt: Database.Statement = db.prepare(`
         INSERT INTO shop (item_name, price, created_at, updated_at)
         VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `);
     const result: Database.RunResult = stmt.run(itemName, itemValue);
-    return result.changes > 0;
+    if (result.changes > 0) {
+        logSuccess('createItem', 'shop', `Item ${itemName} created successfully`);
+        return true;
+    }
+    logFailure('createItem', 'shop', 'Failed to create item');
+    return false;
 }
 
 export function getShopItem(itemId: number): ShopItem | null {
