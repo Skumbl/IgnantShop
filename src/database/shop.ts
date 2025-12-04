@@ -38,10 +38,10 @@ export function getShopItem(itemId: number): ShopItem | null {
     `);
     const result: ShopItem | undefined = stmt.get(itemId) as ShopItem | undefined;
     if (result) {
-        logSuccess('getShopItem', 'shop', `Item ${result.item_name} retrieved successfully`);
+        logSuccess('getShopItem', 'shop', { item: result });
         return result;
     }
-    logFailure('getShopItem', 'shop', `Item ${itemId} not found`);
+    logFailure('getShopItem', 'shop', { itemId });
     return null;
 }
 
@@ -50,7 +50,7 @@ export function getAllShopItems(): ShopItem[] {
         SELECT * FROM shop ORDER BY price ASC
     `);
     const result: ShopItem[] = stmt.all() as ShopItem[];
-    logSuccess('getAllShopItems', 'shop', `Retrieved ${result.length} items`);
+    logSuccess('getAllShopItems', 'shop', { items: result });
     return result;
 }
 
@@ -64,16 +64,16 @@ export function updateItem(itemId: number, itemName: string, itemValue: number):
     `);
     const result: Database.RunResult = stmt.run(itemName, itemValue, itemId);
     if (result.changes > 0) {
-        logSuccess('updateItem', 'shop', `Item ${itemId} updated successfully`);
+        logSuccess('updateItem', 'shop', { itemId, item: { name: itemName, value: itemValue } });
         return true;
     }
-    logFailure('updateItem', 'shop', `Item ${itemId} not updated`);
+    logFailure('updateItem', 'shop', { itemId, item: { name: itemName, value: itemValue } });
     return false;
 }
 
 export function deleteItem(itemId: number): boolean {
     if (!itemId || !itemExistsById(itemId)) {
-        logFailure('deleteItem', 'shop', `Item ${itemId} not found`);
+        logFailure('deleteItem', 'shop', { itemId });
         return false;
     }
     const stmt: Database.Statement = db.prepare(`
@@ -81,10 +81,10 @@ export function deleteItem(itemId: number): boolean {
     `);
     const result: Database.RunResult = stmt.run(itemId);
     if (result.changes > 0) {
-        logSuccess('deleteItem', 'shop', `Item ${itemId} deleted successfully`);
+        logSuccess('deleteItem', 'shop', { itemId });
         return true;
     }
-    logFailure('deleteItem', 'shop', `Item ${itemId} not deleted`);
+    logFailure('deleteItem', 'shop', { itemId });
     return false;
 }
 
@@ -95,10 +95,10 @@ function itemExistsByName(itemName: string): boolean {
     `);
     const result: { count: number } = stmt.get(itemName) as { count: number };
     if (result.count > 0) {
-        logSuccess('itemExistsByName', 'shop', `Item ${itemName} exists`);
+        logSuccess('itemExistsByName', 'shop', { itemName });
         return true;
     }
-    logFailure('itemExistsByName', 'shop', `Item ${itemName} not found`);
+    logFailure('itemExistsByName', 'shop', { itemName });
     return false;
 }
 
@@ -108,9 +108,9 @@ function itemExistsById(itemId: number): boolean {
     `);
     const result: { count: number } = stmt.get(itemId) as { count: number };
     if (result.count > 0) {
-        logSuccess('itemExistsById', 'shop', `Item ${itemId} exists`);
+        logSuccess('itemExistsById', 'shop', { itemId });
         return true;
     }
-    logFailure('itemExistsById', 'shop', `Item ${itemId} not found`);
+    logFailure('itemExistsById', 'shop', { itemId });
     return false;
 }
