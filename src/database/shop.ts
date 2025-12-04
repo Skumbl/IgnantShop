@@ -94,12 +94,7 @@ function itemExistsByName(itemName: string): boolean {
         SELECT COUNT(*) as count FROM shop WHERE item_name = ?
     `);
     const result: { count: number } = stmt.get(itemName) as { count: number };
-    if (result.count > 0) {
-        logSuccess('itemExistsByName', 'shop', { itemName });
-        return true;
-    }
-    logFailure('itemExistsByName', 'shop', { itemName });
-    return false;
+    return result.count > 0;
 }
 
 function itemExistsById(itemId: number): boolean {
@@ -107,10 +102,5 @@ function itemExistsById(itemId: number): boolean {
         SELECT COUNT(*) as count FROM shop WHERE item_id = ?
     `);
     const result: { count: number } = stmt.get(itemId) as { count: number };
-    if (result.count > 0) {
-        logSuccess('itemExistsById', 'shop', { itemId });
-        return true;
-    }
-    logFailure('itemExistsById', 'shop', { itemId });
-    return false;
+    return result.count > 0;
 }
