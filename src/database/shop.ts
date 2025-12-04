@@ -12,7 +12,7 @@ export interface ShopItem {
 
 export function createItem(itemName: string, itemValue: number): boolean {
     if (!itemName || !itemValue || itemExistsByName(itemName)) {
-        logFailure('createItem', 'shop', 'Invalid item name or value');
+        logFailure('createItem', 'shop', { itemName, itemValue });
         return false;
     }
     const stmt: Database.Statement = db.prepare(`
@@ -21,45 +21,71 @@ export function createItem(itemName: string, itemValue: number): boolean {
     `);
     const result: Database.RunResult = stmt.run(itemName, itemValue);
     if (result.changes > 0) {
-        logSuccess('createItem', 'shop', `Item ${itemName} created successfully`);
+        logSuccess('createItem', 'shop', { itemId: result.lastInsertRowid });
         return true;
     }
-    logFailure('createItem', 'shop', 'Failed to create item');
+    logFailure('createItem', 'shop', { itemName, itemValue });
     return false;
 }
 
 export function getShopItem(itemId: number): ShopItem | null {
-    if (!itemId) return null;
+    if (!itemId) {
+        logFailure('getShopItem', 'shop', { itemId });
+        return null;
+    }
     const stmt: Database.Statement = db.prepare(`
         SELECT * FROM shop WHERE item_id = ?
     `);
     const result: ShopItem | undefined = stmt.get(itemId) as ShopItem | undefined;
-    return result || null;
+    if (result) {
+        logSuccess('getShopItem', 'shop', `Item ${result.item_name} retrieved successfully`);
+        return result;
+    }
+    logFailure('getShopItem', 'shop', `Item ${itemId} not found`);
+    return null;
 }
 
 export function getAllShopItems(): ShopItem[] {
     const stmt: Database.Statement = db.prepare(`
         SELECT * FROM shop ORDER BY price ASC
     `);
-    return stmt.all() as ShopItem[];
+    const result: ShopItem[] = stmt.all() as ShopItem[];
+    logSuccess('getAllShopItems', 'shop', `Retrieved ${result.length} items`);
+    return result;
 }
 
 export function updateItem(itemId: number, itemName: string, itemValue: number): boolean {
-    if (!itemName || !itemValue || !itemExistsById(itemId)) return false;
+    if (!itemName || !itemValue || !itemExistsById(itemId)) {
+        logFailure('updateItem', 'shop', `Item ${itemId} not found`);
+        return false;
+    }
     const stmt: Database.Statement = db.prepare(`
         UPDATE shop SET item_name = ?, price = ?, updated_at = CURRENT_TIMESTAMP WHERE item_id = ?
     `);
     const result: Database.RunResult = stmt.run(itemName, itemValue, itemId);
-    return result.changes > 0;
+    if (result.changes > 0) {
+        logSuccess('updateItem', 'shop', `Item ${itemId} updated successfully`);
+        return true;
+    }
+    logFailure('updateItem', 'shop', `Item ${itemId} not updated`);
+    return false;
 }
 
 export function deleteItem(itemId: number): boolean {
-    if (!itemId || !itemExistsById(itemId)) return false;
+    if (!itemId || !itemExistsById(itemId)) {
+        logFailure('deleteItem', 'shop', `Item ${itemId} not found`);
+        return false;
+    }
     const stmt: Database.Statement = db.prepare(`
         DELETE FROM shop WHERE item_id = ?
     `);
     const result: Database.RunResult = stmt.run(itemId);
-    return result.changes > 0;
+    if (result.changes > 0) {
+        logSuccess('deleteItem', 'shop', `Item ${itemId} deleted successfully`);
+        return true;
+    }
+    logFailure('deleteItem', 'shop', `Item ${itemId} not deleted`);
+    return false;
 }
 
 // helper functions
@@ -68,7 +94,12 @@ function itemExistsByName(itemName: string): boolean {
         SELECT COUNT(*) as count FROM shop WHERE item_name = ?
     `);
     const result: { count: number } = stmt.get(itemName) as { count: number };
-    return result.count > 0;
+    if (result.count > 0) {
+        logSuccess('itemExistsByName', 'shop', `Item ${itemName} exists`);
+        return true;
+    }
+    logFailure('itemExistsByName', 'shop', `Item ${itemName} not found`);
+    return false;
 }
 
 function itemExistsById(itemId: number): boolean {
@@ -76,5 +107,10 @@ function itemExistsById(itemId: number): boolean {
         SELECT COUNT(*) as count FROM shop WHERE item_id = ?
     `);
     const result: { count: number } = stmt.get(itemId) as { count: number };
-    return result.count > 0;
+    if (result.count > 0) {
+        logSuccess('itemExistsById', 'shop', `Item ${itemId} exists`);
+        return true;
+    }
+    logFailure('itemExistsById', 'shop', `Item ${itemId} not found`);
+    return false;
 }

@@ -1,5 +1,6 @@
 import { db } from './index.js';
 import type Database from 'better-sqlite3';
+import { logFailure } from './logger.js';
 
 export interface InventoryItem {
     inventory_id: number;
@@ -11,7 +12,9 @@ export interface InventoryItem {
 }
 
 export function addItemToInventory(userId: string, itemId: number): boolean {
-    if (!userId || !itemId) return false;
+    if (!userId || !itemId) {
+        logFailure('addItemToInventory', 'inventory', { userId, itemId });
+    }
 
     const stmt: Database.Statement = db.prepare(`
         INSERT INTO inventory (user_id, item_id, created_at, updated_at)
