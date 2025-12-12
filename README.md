@@ -24,7 +24,7 @@ A Discord bot for managing a virtual economy with wallets, shop items, inventory
 - `/leaderboard` - View top users by total worth (balance + inventory value)
 - `/inventory [@user]` - View your inventory (or another user's)
 - `/transfer-points <@user> <amount>` - Send coins to another user
-- `/transfer-coins <@user> <amount>` - Send coins to another user
+- `/transfer-item <@user> <item-id>` - Transfer an item from your inventory to another user
 
 ### Shop Commands
 - `/shop` - View all available items for purchase
@@ -39,12 +39,17 @@ A Discord bot for managing a virtual economy with wallets, shop items, inventory
   - Interactive gameplay with Hit/Stand buttons
   - Natural blackjack pays 2.5x
   - Private gameplay with public results
+- `/lost` - Check how much money you've lost gambling
+- `/loser-leaderboard` - See the biggest losers and their total losses
 
 ### Admin Commands
 - `/create-account <@user>` - Create a new user account (Ignant only)
 - `/award <@user> <amount>` - Give coins to a user (Ignant only)
 - `/award-all <amount>` - Give coins to all users (Ignant only)
 - `/deduct <@user> <amount>` - Remove coins from a user (Ignant only)
+
+### Utility Commands
+- `/help` - Display a list of all available commands
 
 ## Database Schema
 
