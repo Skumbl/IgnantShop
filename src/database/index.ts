@@ -4,7 +4,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { logSuccess } from './logger.js';
 
-const dbPath: string = path.join(import.meta.dirname, '..', 'data', 'ignantShop.db');
+const dbPath: string = path.join(import.meta.dirname, '..', '..', 'data', 'ignantShop.db');
 
 if (!fs.existsSync(dbPath)) {
     fs.mkdirSync(path.dirname(dbPath), { recursive: true });
