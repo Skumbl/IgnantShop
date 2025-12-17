@@ -40,6 +40,9 @@ export default {
             return;
         }
 
+        // Defer the reply to prevent timeout
+        await interaction.deferReply();
+
         const wallets: walletEntry[] = getAllWallets();
         for (const wallet of wallets) {
             if (!award(wallet.user_id, amount)) {
@@ -66,7 +69,7 @@ export default {
                 .setTitle('Award All')
                 .setDescription(`Awarded **${amount}** Ignant Coin(s) to all accounts.\nExcept${excluded}`)
                 .setTimestamp();
-            await interaction.reply({ embeds: [successEmbed] });
+            await interaction.editReply({ embeds: [successEmbed] });
         }
         else {
             const successEmbed: EmbedBuilder = new EmbedBuilder()
@@ -74,7 +77,7 @@ export default {
                 .setTitle('Award All')
                 .setDescription(`Awarded **${amount}** Ignant Coin(s) to all accounts.`)
                 .setTimestamp();
-            await interaction.reply({ embeds: [successEmbed] });
+            await interaction.editReply({ embeds: [successEmbed] });
         }
     },
 } satisfies Command;
